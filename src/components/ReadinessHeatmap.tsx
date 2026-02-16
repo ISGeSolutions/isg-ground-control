@@ -19,25 +19,26 @@ function getReadinessColor(value: number): string {
 }
 
 export function ReadinessHeatmap({ departures, onDepartureClick }: ReadinessHeatmapProps) {
-  const { dates, destinations, grid } = useMemo(() => {
+  const { dates, seriesList, grid } = useMemo(() => {
     const dateSet = new Set<string>();
-    const destSet = new Set<string>();
-    const map = new Map<string, { readiness: number; id: string; pax: number }>();
+    const seriesSet = new Set<string>();
+    const map = new Map<string, { readiness: number; id: string; pax: number; destination: string }>();
 
     for (const dep of departures) {
       dateSet.add(dep.date);
-      destSet.add(dep.destination);
-      const key = `${dep.date}|${dep.destination}`;
+      seriesSet.add(dep.series);
+      const key = `${dep.date}|${dep.series}`;
       map.set(key, {
         readiness: calculateReadiness(dep.activities),
         id: dep.id,
         pax: dep.paxCount,
+        destination: dep.destination,
       });
     }
 
     const dates = Array.from(dateSet).sort();
-    const destinations = Array.from(destSet).sort();
-    return { dates, destinations, grid: map };
+    const seriesList = Array.from(seriesSet).sort();
+    return { dates, seriesList, grid: map };
   }, [departures]);
 
   if (departures.length === 0) {
@@ -84,7 +85,7 @@ export function ReadinessHeatmap({ departures, onDepartureClick }: ReadinessHeat
           <thead>
             <tr>
               <th className="ops-grid-header sticky left-0 z-10 bg-[hsl(var(--grid-header))] text-left min-w-[120px]">
-                Destination
+                Series
               </th>
               {dates.map(date => (
                 <th key={date} className="ops-grid-header text-center px-1 min-w-[40px]">
@@ -94,13 +95,13 @@ export function ReadinessHeatmap({ departures, onDepartureClick }: ReadinessHeat
             </tr>
           </thead>
           <tbody>
-            {destinations.map(dest => (
-              <tr key={dest} className="hover:bg-[hsl(var(--grid-row-hover))]">
+            {seriesList.map(series => (
+              <tr key={series} className="hover:bg-[hsl(var(--grid-row-hover))]">
                 <td className="ops-grid-cell sticky left-0 z-10 bg-card font-medium text-foreground">
-                  {dest}
+                  {series}
                 </td>
                 {dates.map(date => {
-                  const key = `${date}|${dest}`;
+                  const key = `${date}|${series}`;
                   const cell = grid.get(key);
                   if (!cell) {
                     return (
@@ -121,7 +122,8 @@ export function ReadinessHeatmap({ departures, onDepartureClick }: ReadinessHeat
                           </button>
                         </TooltipTrigger>
                         <TooltipContent side="top" className="text-xs">
-                          <p className="font-semibold">{dest}</p>
+                          <p className="font-semibold">{series}</p>
+                          <p>{cell.destination}</p>
                           <p>{format(parseISO(date), 'dd MMM yyyy')}</p>
                           <p>Readiness: {cell.readiness}%</p>
                           <p>Pax: {cell.pax}</p>
