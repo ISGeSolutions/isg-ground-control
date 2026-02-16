@@ -6,10 +6,11 @@ import { CalendarView } from '@/components/CalendarView';
 import { FiltersPanel } from '@/components/FiltersPanel';
 import { NextDeparturesView } from '@/components/NextDeparturesView';
 import { SeriesAggregatedView } from '@/components/SeriesAggregatedView';
+import { ReadinessHeatmap } from '@/components/ReadinessHeatmap';
 import { DepartureDetailDrawer } from '@/components/DepartureDetailDrawer';
 import { calculateReadiness, calculateRisk, calculateSummaryStats } from '@/utils/operations';
 import { exportDeparturesToCSV } from '@/utils/csvExport';
-import { Plane, BarChart3, AlertTriangle, CheckCircle2, Clock, CalendarCheck, LayoutGrid, Calendar, List, Layers, Download } from 'lucide-react';
+import { Plane, BarChart3, AlertTriangle, CheckCircle2, Clock, CalendarCheck, LayoutGrid, Calendar, List, Layers, Download, Grid3X3 } from 'lucide-react';
 
 const Index = () => {
   const [departures, setDepartures] = useState<Departure[]>(() => generateMockDepartures());
@@ -20,13 +21,13 @@ const Index = () => {
   const [drawerActivityCode, setDrawerActivityCode] = useState<string | undefined>();
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [bulkStatus, setBulkStatus] = useState<ActivityStatus>('complete');
-  const [view, setView] = useState<'grid' | 'calendar' | 'next' | 'series'>('grid');
+  const [view, setView] = useState<'grid' | 'calendar' | 'next' | 'series' | 'heatmap'>('grid');
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement;
       if (target.tagName === 'INPUT' || target.tagName === 'SELECT' || target.tagName === 'TEXTAREA') return;
-      const views = { '1': 'grid', '2': 'calendar', '3': 'next', '4': 'series' } as const;
+      const views = { '1': 'grid', '2': 'calendar', '3': 'next', '4': 'series', '5': 'heatmap' } as const;
       const v = views[e.key as keyof typeof views];
       if (v) setView(v);
     };
@@ -148,6 +149,13 @@ const Index = () => {
             >
               <Layers className="w-3.5 h-3.5" />
             </button>
+            <button
+              onClick={() => setView('heatmap')}
+              title="Heatmap (5)"
+              className={`px-2 py-1 rounded text-[10px] font-semibold transition-colors ${view === 'heatmap' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+            >
+              <Grid3X3 className="w-3.5 h-3.5" />
+            </button>
           </div>
           <button
             onClick={() => exportDeparturesToCSV(filtered)}
@@ -250,8 +258,13 @@ const Index = () => {
             onDepartureClick={handleRowClick}
             onCellClick={handleCellClick}
           />
-        ) : (
+        ) : view === 'series' ? (
           <SeriesAggregatedView
+            departures={filtered}
+            onDepartureClick={handleRowClick}
+          />
+        ) : (
+          <ReadinessHeatmap
             departures={filtered}
             onDepartureClick={handleRowClick}
           />
