@@ -2,10 +2,11 @@ import { useState, useMemo, useCallback } from 'react';
 import { Departure, ActivityStatus, FilterState } from '@/types/operations';
 import { generateMockDepartures, ACTIVITY_TEMPLATES } from '@/data/mockData';
 import { OperationsGrid } from '@/components/OperationsGrid';
+import { CalendarView } from '@/components/CalendarView';
 import { FiltersPanel } from '@/components/FiltersPanel';
 import { DepartureDetailDrawer } from '@/components/DepartureDetailDrawer';
 import { calculateReadiness, calculateRisk, calculateSummaryStats } from '@/utils/operations';
-import { Plane, BarChart3, AlertTriangle, CheckCircle2, Clock, CalendarCheck } from 'lucide-react';
+import { Plane, BarChart3, AlertTriangle, CheckCircle2, Clock, CalendarCheck, LayoutGrid, Calendar } from 'lucide-react';
 
 const Index = () => {
   const [departures, setDepartures] = useState<Departure[]>(() => generateMockDepartures());
@@ -16,6 +17,7 @@ const Index = () => {
   const [drawerActivityCode, setDrawerActivityCode] = useState<string | undefined>();
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [bulkStatus, setBulkStatus] = useState<ActivityStatus>('complete');
+  const [view, setView] = useState<'grid' | 'calendar'>('grid');
 
   const destinations = useMemo(() => {
     const set = new Set(departures.map(d => d.destination));
@@ -102,6 +104,20 @@ const Index = () => {
           </span>
         </div>
         <div className="flex items-center gap-3 text-xs">
+          <div className="flex items-center bg-secondary rounded-md p-0.5">
+            <button
+              onClick={() => setView('grid')}
+              className={`px-2 py-1 rounded text-[10px] font-semibold transition-colors ${view === 'grid' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+            >
+              <LayoutGrid className="w-3.5 h-3.5" />
+            </button>
+            <button
+              onClick={() => setView('calendar')}
+              className={`px-2 py-1 rounded text-[10px] font-semibold transition-colors ${view === 'calendar' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+            >
+              <Calendar className="w-3.5 h-3.5" />
+            </button>
+          </div>
           <span className="text-muted-foreground">
             {filtered.length} departures
           </span>
@@ -175,15 +191,22 @@ const Index = () => {
         )}
       </div>
 
-      {/* Grid */}
+      {/* Main Content */}
       <main className="flex-1 p-4 overflow-hidden">
-        <OperationsGrid
-          departures={filtered}
-          onCellClick={handleCellClick}
-          onRowClick={handleRowClick}
-          selectedIds={selectedIds}
-          onToggleSelect={handleToggleSelect}
-        />
+        {view === 'grid' ? (
+          <OperationsGrid
+            departures={filtered}
+            onCellClick={handleCellClick}
+            onRowClick={handleRowClick}
+            selectedIds={selectedIds}
+            onToggleSelect={handleToggleSelect}
+          />
+        ) : (
+          <CalendarView
+            departures={filtered}
+            onDepartureClick={handleRowClick}
+          />
+        )}
       </main>
 
       {/* Drawer */}
