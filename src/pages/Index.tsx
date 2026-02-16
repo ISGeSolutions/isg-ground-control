@@ -4,9 +4,10 @@ import { generateMockDepartures, ACTIVITY_TEMPLATES } from '@/data/mockData';
 import { OperationsGrid } from '@/components/OperationsGrid';
 import { CalendarView } from '@/components/CalendarView';
 import { FiltersPanel } from '@/components/FiltersPanel';
+import { NextDeparturesView } from '@/components/NextDeparturesView';
 import { DepartureDetailDrawer } from '@/components/DepartureDetailDrawer';
 import { calculateReadiness, calculateRisk, calculateSummaryStats } from '@/utils/operations';
-import { Plane, BarChart3, AlertTriangle, CheckCircle2, Clock, CalendarCheck, LayoutGrid, Calendar } from 'lucide-react';
+import { Plane, BarChart3, AlertTriangle, CheckCircle2, Clock, CalendarCheck, LayoutGrid, Calendar, List } from 'lucide-react';
 
 const Index = () => {
   const [departures, setDepartures] = useState<Departure[]>(() => generateMockDepartures());
@@ -17,7 +18,7 @@ const Index = () => {
   const [drawerActivityCode, setDrawerActivityCode] = useState<string | undefined>();
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [bulkStatus, setBulkStatus] = useState<ActivityStatus>('complete');
-  const [view, setView] = useState<'grid' | 'calendar'>('grid');
+  const [view, setView] = useState<'grid' | 'calendar' | 'next'>('grid');
 
   const destinations = useMemo(() => {
     const set = new Set(departures.map(d => d.destination));
@@ -117,6 +118,12 @@ const Index = () => {
             >
               <Calendar className="w-3.5 h-3.5" />
             </button>
+            <button
+              onClick={() => setView('next')}
+              className={`px-2 py-1 rounded text-[10px] font-semibold transition-colors ${view === 'next' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+            >
+              <List className="w-3.5 h-3.5" />
+            </button>
           </div>
           <span className="text-muted-foreground">
             {filtered.length} departures
@@ -201,10 +208,16 @@ const Index = () => {
             selectedIds={selectedIds}
             onToggleSelect={handleToggleSelect}
           />
-        ) : (
+        ) : view === 'calendar' ? (
           <CalendarView
             departures={filtered}
             onDepartureClick={handleRowClick}
+          />
+        ) : (
+          <NextDeparturesView
+            departures={filtered}
+            onDepartureClick={handleRowClick}
+            onCellClick={handleCellClick}
           />
         )}
       </main>
