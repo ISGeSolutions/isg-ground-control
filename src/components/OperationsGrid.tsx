@@ -16,30 +16,29 @@ interface OperationsGridProps {
 export function OperationsGrid({ departures, onCellClick, onRowClick, selectedIds, onToggleSelect }: OperationsGridProps) {
   return (
     <div className="overflow-auto border border-border rounded-lg">
-      <table className="w-full border-collapse min-w-[900px]">
+      <table className="w-full border-collapse min-w-[1100px]">
         <thead className="sticky top-0 z-10">
           <tr>
             <th className="ops-grid-header w-8 border-r border-b text-center">
-              <input
-                type="checkbox"
-                className="w-3 h-3 accent-primary"
-                onChange={() => {}}
-              />
+              <input type="checkbox" className="w-3 h-3 accent-primary" onChange={() => {}} />
             </th>
             <th className="ops-grid-header border-r border-b text-left">Date</th>
             <th className="ops-grid-header border-r border-b text-left">Dest</th>
             <th className="ops-grid-header border-r border-b text-left">Series</th>
             <th className="ops-grid-header border-r border-b text-center">Days</th>
             <th className="ops-grid-header border-r border-b text-center">Pax</th>
+            <th className="ops-grid-header border-r border-b text-center">Mgr</th>
+            <th className="ops-grid-header border-r border-b text-center">Exec</th>
             <th className="ops-grid-header border-r border-b text-center">Ready</th>
             <th className="ops-grid-header border-r border-b text-center w-8">Risk</th>
             {ACTIVITY_TEMPLATES.map(t => (
               <th
                 key={t.code}
                 className="ops-grid-header border-r border-b text-center"
-                title={t.name}
+                title={`${t.name} [${t.source}]`}
               >
                 <span className={t.critical ? 'text-status-red' : ''}>{t.code}</span>
+                <span className="block text-[8px] opacity-50 normal-case tracking-normal">{t.source}</span>
               </th>
             ))}
           </tr>
@@ -85,6 +84,12 @@ export function OperationsGrid({ departures, onCellClick, onRowClick, selectedId
                 </td>
                 <td className="ops-grid-cell text-center font-mono text-muted-foreground">
                   {dep.paxCount}
+                </td>
+                <td className="ops-grid-cell text-center font-mono text-[10px] text-muted-foreground">
+                  {dep.opsManager || '—'}
+                </td>
+                <td className="ops-grid-cell text-center font-mono text-[10px] text-muted-foreground">
+                  {dep.opsExec || '—'}
                 </td>
                 <td className="ops-grid-cell text-center">
                   <ReadinessBar value={readiness} />

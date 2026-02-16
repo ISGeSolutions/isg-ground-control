@@ -1,6 +1,6 @@
 import { Departure, Activity, ActivityStatus } from '@/types/operations';
 import { ACTIVITY_TEMPLATES } from '@/data/mockData';
-import { getTemplate, getStatusLabel, getDaysUntilDeparture } from '@/utils/operations';
+import { getTemplate, getStatusLabel, getDaysUntilDeparture, getSourceLabel } from '@/utils/operations';
 import { StatusBadge } from './StatusBadge';
 import { X, ExternalLink, ChevronDown } from 'lucide-react';
 import { format } from 'date-fns';
@@ -12,6 +12,8 @@ interface DepartureDetailDrawerProps {
   onClose: () => void;
   onUpdateActivity: (departureId: string, activityId: string, status: ActivityStatus, notes?: string) => void;
 }
+
+const ALL_STATUSES: ActivityStatus[] = ['not_started', 'in_progress', 'waiting', 'complete', 'overdue', 'not_applicable'];
 
 export function DepartureDetailDrawer({ departure, selectedActivityCode, onClose, onUpdateActivity }: DepartureDetailDrawerProps) {
   const daysOut = getDaysUntilDeparture(departure.date);
@@ -32,6 +34,9 @@ export function DepartureDetailDrawer({ departure, selectedActivityCode, onClose
               <p className="text-xs text-muted-foreground mt-0.5">
                 {format(new Date(departure.date), 'EEE dd MMM yyyy')} · {departure.series}
               </p>
+              {departure.tourGeneric && (
+                <p className="text-[10px] text-muted-foreground mt-0.5">{departure.tourGeneric}</p>
+              )}
             </div>
             <button onClick={onClose} className="p-1 hover:bg-secondary rounded transition-colors text-muted-foreground hover:text-foreground">
               <X className="w-4 h-4" />
@@ -39,7 +44,7 @@ export function DepartureDetailDrawer({ departure, selectedActivityCode, onClose
           </div>
 
           {/* Meta */}
-          <div className="flex gap-4 mt-3 text-xs">
+          <div className="flex gap-4 mt-3 text-xs flex-wrap">
             <div>
               <span className="text-muted-foreground">Days Out</span>
               <p className={`font-mono font-semibold ${daysOut <= 3 ? 'risk-red' : daysOut <= 7 ? 'risk-amber' : 'text-foreground'}`}>
@@ -54,7 +59,22 @@ export function DepartureDetailDrawer({ departure, selectedActivityCode, onClose
               <span className="text-muted-foreground">Bookings</span>
               <p className="font-mono font-semibold text-foreground">{departure.bookingCount}</p>
             </div>
+            <div>
+              <span className="text-muted-foreground">Mgr</span>
+              <p className="font-mono font-semibold text-foreground">{departure.opsManager || '—'}</p>
+            </div>
+            <div>
+              <span className="text-muted-foreground">Exec</span>
+              <p className="font-mono font-semibold text-foreground">{departure.opsExec || '—'}</p>
+            </div>
           </div>
+
+          {departure.returnDate && (
+            <p className="text-[10px] text-muted-foreground mt-1">
+              Return: {format(new Date(departure.returnDate), 'dd MMM yyyy')}
+              {departure.jiSentDate && ` · JI Sent: ${format(new Date(departure.jiSentDate), 'dd MMM yyyy')}`}
+            </p>
+          )}
 
           {departure.travelSystemLink && (
             <a
@@ -87,6 +107,7 @@ export function DepartureDetailDrawer({ departure, selectedActivityCode, onClose
                     <StatusBadge status={activity.status} compact />
                     <span className="font-mono font-semibold text-muted-foreground w-6">{activity.templateCode}</span>
                     <span className="text-foreground flex-1 text-left">{template?.name}</span>
+                    <span className="text-[8px] font-mono text-muted-foreground/60 uppercase">{activity.source}</span>
                     {template?.required && (
                       <span className="text-[9px] uppercase tracking-wider text-primary font-semibold">req</span>
                     )}
@@ -102,20 +123,20 @@ export function DepartureDetailDrawer({ departure, selectedActivityCode, onClose
                   {isExpanded && (
                     <div className="px-3 pb-3 pt-1 border-t border-border bg-secondary/20 space-y-2">
                       <div className="flex gap-1 flex-wrap">
-                        {(['not_started', 'in_progress', 'waiting', 'complete', 'overdue'] as ActivityStatus[]).map(s => (
+                        {ALL_STATUSES.map(s => (
                           <button
                             key={s}
                             onClick={() => onUpdateActivity(departure.id, activity.id, s)}
                             className={`status-badge cursor-pointer transition-all ${
                               activity.status === s ? 'ring-1 ring-foreground/30 scale-105' : 'opacity-50 hover:opacity-80'
-                            } ${s === 'not_started' ? 'status-not-started' : s === 'in_progress' ? 'status-in-progress' : s === 'waiting' ? 'status-waiting' : s === 'complete' ? 'status-complete' : 'status-overdue'}`}
+                            } ${s === 'not_started' ? 'status-not-started' : s === 'in_progress' ? 'status-in-progress' : s === 'waiting' ? 'status-waiting' : s === 'complete' ? 'status-complete' : s === 'not_applicable' ? 'status-na' : 'status-overdue'}`}
                           >
                             {getStatusLabel(s)}
                           </button>
                         ))}
                       </div>
                       <div className="text-[10px] text-muted-foreground">
-                        Last updated: {activity.updatedAt} by {activity.updatedBy}
+                        Source: {getSourceLabel(activity.source)} · Last updated: {activity.updatedAt} by {activity.updatedBy}
                       </div>
                     </div>
                   )}

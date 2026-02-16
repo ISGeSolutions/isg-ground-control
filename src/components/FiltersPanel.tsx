@@ -1,5 +1,5 @@
 import { FilterState } from '@/types/operations';
-import { SERIES } from '@/data/mockData';
+import { SERIES, USERS } from '@/data/mockData';
 import { Search, X } from 'lucide-react';
 
 interface FiltersPanelProps {
@@ -13,11 +13,14 @@ export function FiltersPanel({ filters, onFilterChange, destinations }: FiltersP
     onFilterChange({ ...filters, [key]: value });
   };
 
-  const hasFilters = filters.series || filters.destination || filters.search || filters.dateFrom || filters.dateTo;
+  const hasFilters = filters.series || filters.destination || filters.search || filters.dateFrom || filters.dateTo || filters.opsManager || filters.opsExec;
 
   const clearAll = () => {
-    onFilterChange({ dateFrom: '', dateTo: '', series: '', destination: '', search: '' });
+    onFilterChange({ dateFrom: '', dateTo: '', series: '', destination: '', search: '', opsManager: '', opsExec: '' });
   };
+
+  const managers = USERS.filter(u => u.role === 'ops_manager');
+  const execs = USERS.filter(u => u.role === 'ops_exec');
 
   return (
     <div className="flex items-center gap-2 flex-wrap min-w-0">
@@ -51,6 +54,28 @@ export function FiltersPanel({ filters, onFilterChange, destinations }: FiltersP
         <option value="">All Dest</option>
         {destinations.map(d => (
           <option key={d} value={d}>{d}</option>
+        ))}
+      </select>
+
+      <select
+        value={filters.opsManager}
+        onChange={(e) => update('opsManager', e.target.value)}
+        className="h-7 px-2 text-xs bg-secondary border border-border rounded-md text-foreground focus:outline-none focus:ring-1 focus:ring-primary flex-shrink-0"
+      >
+        <option value="">All Managers</option>
+        {managers.map(u => (
+          <option key={u.id} value={u.initials}>{u.name}</option>
+        ))}
+      </select>
+
+      <select
+        value={filters.opsExec}
+        onChange={(e) => update('opsExec', e.target.value)}
+        className="h-7 px-2 text-xs bg-secondary border border-border rounded-md text-foreground focus:outline-none focus:ring-1 focus:ring-primary flex-shrink-0"
+      >
+        <option value="">All Execs</option>
+        {execs.map(u => (
+          <option key={u.id} value={u.initials}>{u.name}</option>
         ))}
       </select>
 

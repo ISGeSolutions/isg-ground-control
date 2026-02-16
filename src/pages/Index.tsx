@@ -4,13 +4,13 @@ import { generateMockDepartures, ACTIVITY_TEMPLATES } from '@/data/mockData';
 import { OperationsGrid } from '@/components/OperationsGrid';
 import { FiltersPanel } from '@/components/FiltersPanel';
 import { DepartureDetailDrawer } from '@/components/DepartureDetailDrawer';
-import { calculateReadiness, calculateRisk } from '@/utils/operations';
-import { Plane, BarChart3, AlertTriangle, CheckCircle2 } from 'lucide-react';
+import { calculateReadiness, calculateRisk, calculateSummaryStats } from '@/utils/operations';
+import { Plane, BarChart3, AlertTriangle, CheckCircle2, Clock, CalendarCheck } from 'lucide-react';
 
 const Index = () => {
   const [departures, setDepartures] = useState<Departure[]>(() => generateMockDepartures());
   const [filters, setFilters] = useState<FilterState>({
-    dateFrom: '', dateTo: '', series: '', destination: '', search: '',
+    dateFrom: '', dateTo: '', series: '', destination: '', search: '', opsManager: '', opsExec: '',
   });
   const [drawerDepartureId, setDrawerDepartureId] = useState<string | null>(null);
   const [drawerActivityCode, setDrawerActivityCode] = useState<string | undefined>();
@@ -26,6 +26,8 @@ const Index = () => {
     return departures.filter(dep => {
       if (filters.series && dep.series !== filters.series) return false;
       if (filters.destination && dep.destination !== filters.destination) return false;
+      if (filters.opsManager && dep.opsManager !== filters.opsManager) return false;
+      if (filters.opsExec && dep.opsExec !== filters.opsExec) return false;
       if (filters.dateFrom && dep.date < filters.dateFrom) return false;
       if (filters.dateTo && dep.date > filters.dateTo) return false;
       if (filters.search) {
@@ -43,6 +45,8 @@ const Index = () => {
     const avgReadiness = total > 0 ? Math.round(filtered.reduce((sum, d) => sum + calculateReadiness(d.activities), 0) / total) : 0;
     return { total, atRisk, ready, avgReadiness };
   }, [filtered]);
+
+  const summaryStats = useMemo(() => calculateSummaryStats(filtered), [filtered]);
 
   const handleCellClick = useCallback((departureId: string, activityCode: string) => {
     setDrawerDepartureId(departureId);
@@ -105,7 +109,7 @@ const Index = () => {
       </header>
 
       {/* Stats Bar */}
-      <div className="border-b border-border px-4 py-2 flex items-center gap-6 bg-card/50">
+      <div className="border-b border-border px-4 py-2 flex items-center gap-6 bg-card/50 flex-wrap">
         <div className="flex items-center gap-1.5 text-xs">
           <BarChart3 className="w-3.5 h-3.5 text-primary" />
           <span className="text-muted-foreground">Avg Readiness:</span>
@@ -120,6 +124,27 @@ const Index = () => {
           <CheckCircle2 className="w-3.5 h-3.5 text-status-green" />
           <span className="text-muted-foreground">Ready:</span>
           <span className="font-mono font-semibold risk-green">{stats.ready}</span>
+        </div>
+        <div className="h-4 w-px bg-border" />
+        <div className="flex items-center gap-1.5 text-xs">
+          <AlertTriangle className="w-3.5 h-3.5 text-status-red" />
+          <span className="text-muted-foreground">Overdue:</span>
+          <span className="font-mono font-semibold risk-red">{summaryStats.overdue}</span>
+        </div>
+        <div className="flex items-center gap-1.5 text-xs">
+          <Clock className="w-3.5 h-3.5 text-status-amber" />
+          <span className="text-muted-foreground">Due Later:</span>
+          <span className="font-mono font-semibold risk-amber">{summaryStats.dueLater}</span>
+        </div>
+        <div className="flex items-center gap-1.5 text-xs">
+          <CalendarCheck className="w-3.5 h-3.5 text-status-green" />
+          <span className="text-muted-foreground">Done Today:</span>
+          <span className="font-mono font-semibold risk-green">{summaryStats.doneToday}</span>
+        </div>
+        <div className="flex items-center gap-1.5 text-xs">
+          <CheckCircle2 className="w-3.5 h-3.5 text-muted-foreground" />
+          <span className="text-muted-foreground">Done Past:</span>
+          <span className="font-mono font-semibold text-foreground">{summaryStats.donePast}</span>
         </div>
       </div>
 
@@ -138,6 +163,7 @@ const Index = () => {
               <option value="in_progress">In Progress</option>
               <option value="waiting">Waiting</option>
               <option value="complete">Complete</option>
+              <option value="not_applicable">N/A</option>
             </select>
             <button
               onClick={handleBulkUpdate}
