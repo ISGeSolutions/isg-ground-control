@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { Departure, ActivityStatus, FilterState } from '@/types/operations';
 import { generateMockDepartures, ACTIVITY_TEMPLATES } from '@/data/mockData';
 import { OperationsGrid } from '@/components/OperationsGrid';
@@ -21,6 +21,18 @@ const Index = () => {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [bulkStatus, setBulkStatus] = useState<ActivityStatus>('complete');
   const [view, setView] = useState<'grid' | 'calendar' | 'next' | 'series'>('grid');
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.tagName === 'INPUT' || target.tagName === 'SELECT' || target.tagName === 'TEXTAREA') return;
+      const views = { '1': 'grid', '2': 'calendar', '3': 'next', '4': 'series' } as const;
+      const v = views[e.key as keyof typeof views];
+      if (v) setView(v);
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, []);
 
   const destinations = useMemo(() => {
     const set = new Set(departures.map(d => d.destination));
