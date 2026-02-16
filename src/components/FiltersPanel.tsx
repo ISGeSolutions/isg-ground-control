@@ -46,16 +46,7 @@ export function FiltersPanel({ filters, onFilterChange, destinations }: FiltersP
         ))}
       </select>
 
-      <select
-        value={filters.destination}
-        onChange={(e) => update('destination', e.target.value)}
-        className="h-7 px-2 text-xs bg-secondary border border-border rounded-md text-foreground focus:outline-none focus:ring-1 focus:ring-primary flex-shrink-0"
-      >
-        <option value="">All Dest</option>
-        {destinations.map(d => (
-          <option key={d} value={d}>{d}</option>
-        ))}
-      </select>
+
 
       <select
         value={filters.opsManager}
