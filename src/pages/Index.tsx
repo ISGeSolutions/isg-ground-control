@@ -109,24 +109,28 @@ const Index = () => {
           <div className="flex items-center bg-secondary rounded-md p-0.5">
             <button
               onClick={() => setView('grid')}
+              title="Grid"
               className={`px-2 py-1 rounded text-[10px] font-semibold transition-colors ${view === 'grid' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}
             >
               <LayoutGrid className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={() => setView('calendar')}
+              title="Calendar"
               className={`px-2 py-1 rounded text-[10px] font-semibold transition-colors ${view === 'calendar' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}
             >
               <Calendar className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={() => setView('next')}
+              title="Next Departures"
               className={`px-2 py-1 rounded text-[10px] font-semibold transition-colors ${view === 'next' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}
             >
               <List className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={() => setView('series')}
+              title="Series"
               className={`px-2 py-1 rounded text-[10px] font-semibold transition-colors ${view === 'series' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}
             >
               <Layers className="w-3.5 h-3.5" />
