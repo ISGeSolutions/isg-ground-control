@@ -4,6 +4,7 @@ import { calculateReadiness, calculateRisk, getDaysUntilDeparture } from '@/util
 import { ActivityCell } from './ActivityCell';
 import { RiskIndicator, ReadinessBar } from './StatusBadge';
 import { format } from 'date-fns';
+import { GridDensity, densityClasses } from '@/contexts/PreferencesContext';
 
 interface OperationsGridProps {
   departures: Departure[];
@@ -11,11 +12,13 @@ interface OperationsGridProps {
   onRowClick: (departureId: string) => void;
   selectedIds: Set<string>;
   onToggleSelect: (id: string) => void;
+  density?: GridDensity;
 }
 
-export function OperationsGrid({ departures, onCellClick, onRowClick, selectedIds, onToggleSelect }: OperationsGridProps) {
+export function OperationsGrid({ departures, onCellClick, onRowClick, selectedIds, onToggleSelect, density = 'default' }: OperationsGridProps) {
+  const dc = densityClasses(density);
   return (
-    <div className="overflow-auto border border-border rounded-lg">
+    <div className="overflow-auto border border-border rounded-lg" data-density={density}>
       <table className="w-full border-collapse min-w-[1100px]">
         <thead className="sticky top-0 z-10">
           <tr>

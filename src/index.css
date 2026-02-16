@@ -459,6 +459,20 @@
     border-color: hsl(var(--grid-border));
   }
 
+  /* Density overrides */
+  [data-density="compact"] .ops-grid-cell {
+    @apply px-1.5 py-0.5 text-[10px];
+  }
+  [data-density="compact"] .ops-grid-header {
+    @apply px-1.5 py-1 text-[9px];
+  }
+  [data-density="comfortable"] .ops-grid-cell {
+    @apply px-3 py-2.5 text-sm;
+  }
+  [data-density="comfortable"] .ops-grid-header {
+    @apply px-3 py-2.5 text-[11px];
+  }
+
   .status-badge {
     @apply inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono font-semibold uppercase tracking-wider;
   }
