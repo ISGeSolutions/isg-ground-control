@@ -11,6 +11,7 @@ import { DepartureDetailDrawer } from '@/components/DepartureDetailDrawer';
 import { calculateReadiness, calculateRisk, calculateSummaryStats } from '@/utils/operations';
 import { exportDeparturesToCSV } from '@/utils/csvExport';
 import { Plane, BarChart3, AlertTriangle, CheckCircle2, Clock, CalendarCheck, LayoutGrid, Calendar, List, Layers, Download, Grid3X3 } from 'lucide-react';
+import { ThemeSelector } from '@/components/ThemeSelector';
 
 const Index = () => {
   const [departures, setDepartures] = useState<Departure[]>(() => generateMockDepartures());
@@ -157,6 +158,7 @@ const Index = () => {
               <Grid3X3 className="w-3.5 h-3.5" />
             </button>
           </div>
+          <ThemeSelector />
           <button
             onClick={() => exportDeparturesToCSV(filtered)}
             title="Export CSV"
