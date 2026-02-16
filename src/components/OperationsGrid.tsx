@@ -23,7 +23,6 @@ export function OperationsGrid({ departures, onCellClick, onRowClick, selectedId
               <input type="checkbox" className="w-3 h-3 accent-primary" onChange={() => {}} />
             </th>
             <th className="ops-grid-header border-r border-b text-left">Date</th>
-            <th className="ops-grid-header border-r border-b text-left">Dest</th>
             <th className="ops-grid-header border-r border-b text-left">Series</th>
             <th className="ops-grid-header border-r border-b text-center">Days</th>
             <th className="ops-grid-header border-r border-b text-center">Pax</th>
@@ -68,13 +67,6 @@ export function OperationsGrid({ departures, onCellClick, onRowClick, selectedId
                   onClick={() => onRowClick(dep.id)}
                 >
                   {format(new Date(dep.date), 'dd MMM')}
-                </td>
-                <td
-                  className="ops-grid-cell cursor-pointer hover:text-primary transition-colors"
-                  onClick={() => onRowClick(dep.id)}
-                >
-                  <span className="font-semibold">{dep.destinationCode}</span>
-                  <span className="ml-1 text-muted-foreground hidden lg:inline">{dep.destination}</span>
                 </td>
                 <td className="ops-grid-cell font-mono text-muted-foreground">{dep.series}</td>
                 <td className={`ops-grid-cell text-center font-mono font-semibold ${
