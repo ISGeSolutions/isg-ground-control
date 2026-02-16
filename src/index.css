@@ -125,6 +125,11 @@
     background: hsl(var(--status-red-muted));
     color: hsl(var(--status-red-foreground));
   }
+  .status-na {
+    background: hsl(var(--muted));
+    color: hsl(var(--muted-foreground));
+    opacity: 0.5;
+  }
 
   .risk-red {
     color: hsl(var(--status-red));

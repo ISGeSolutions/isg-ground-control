@@ -1,13 +1,30 @@
-export type ActivityStatus = 'not_started' | 'in_progress' | 'waiting' | 'complete' | 'overdue';
+export type ActivityStatus = 'not_started' | 'in_progress' | 'waiting' | 'complete' | 'overdue' | 'not_applicable';
 
 export type RiskLevel = 'green' | 'amber' | 'red';
+
+export type TaskSource = 'GLOBAL' | 'TG' | 'TS' | 'TD' | 'CUSTOM';
+
+export type SLAReferenceDate = 'departure' | 'return' | 'ji_exists';
+
+export type SLALevel = 'global' | 'tour_generic' | 'tour_series' | 'departure';
+
+export interface SLARule {
+  level: SLALevel;
+  activityCode: string;
+  offsetDays: number;
+  referenceDate: SLAReferenceDate;
+  required?: boolean;
+  critical?: boolean;
+}
 
 export interface ActivityTemplate {
   code: string;
   name: string;
   required: boolean;
   critical: boolean;
-  slaOffsetDays: number; // days before departure
+  slaOffsetDays: number; // days before departure (default)
+  referenceDate: SLAReferenceDate;
+  source: TaskSource;
 }
 
 export interface Activity {
@@ -18,19 +35,25 @@ export interface Activity {
   updatedAt: string;
   updatedBy: string;
   dueDate: string;
+  source: TaskSource;
 }
 
 export interface Departure {
   id: string;
   date: string; // ISO date
+  returnDate?: string;
+  jiSentDate?: string;
   destination: string;
   destinationCode: string;
   series: string;
+  tourGeneric?: string;
   paxCount: number;
   bookingCount: number;
   activities: Activity[];
   travelSystemLink?: string;
   notes: string;
+  opsManager?: string;
+  opsExec?: string;
 }
 
 export interface Series {
@@ -43,6 +66,7 @@ export interface User {
   id: string;
   name: string;
   initials: string;
+  role: 'ops_manager' | 'ops_exec';
 }
 
 export interface FilterState {
@@ -51,4 +75,13 @@ export interface FilterState {
   series: string;
   destination: string;
   search: string;
+  opsManager: string;
+  opsExec: string;
+}
+
+export interface SummaryStats {
+  overdue: number;
+  dueLater: number;
+  doneToday: number;
+  donePast: number;
 }

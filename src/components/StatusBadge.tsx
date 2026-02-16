@@ -13,6 +13,7 @@ const statusIcons: Record<ActivityStatus, React.ReactNode> = {
   waiting: <Clock className="w-3 h-3" />,
   complete: <CheckCircle2 className="w-3 h-3" />,
   overdue: <AlertTriangle className="w-3 h-3" />,
+  not_applicable: <span className="w-3 h-3 inline-flex items-center justify-center text-[9px] font-bold">N</span>,
 };
 
 export function StatusBadge({ status, compact }: StatusBadgeProps) {
