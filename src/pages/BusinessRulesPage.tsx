@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Save, Info } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { Switch } from '@/components/ui/switch';
+import SLAHierarchyEditor from '@/components/SLAHierarchyEditor';
 
 interface BusinessRulesConfig {
   overdueCriticalDays: number;
@@ -214,6 +215,11 @@ export default function BusinessRulesPage() {
           </div>
           <Switch checked={rules.autoMarkOverdue} onCheckedChange={v => update('autoMarkOverdue', v)} />
         </div>
+      </section>
+
+      {/* SLA Hierarchy */}
+      <section className="border border-border rounded-lg p-4">
+        <SLAHierarchyEditor />
       </section>
     </div>
   );
