@@ -12,8 +12,12 @@ import { calculateReadiness, calculateRisk, calculateSummaryStats } from '@/util
 import { exportDeparturesToCSV } from '@/utils/csvExport';
 import { Plane, BarChart3, AlertTriangle, CheckCircle2, Clock, CalendarCheck, LayoutGrid, Calendar, List, Layers, Download, Grid3X3 } from 'lucide-react';
 import { ThemeSelector } from '@/components/ThemeSelector';
+import { PreferencesPanel } from '@/components/PreferencesPanel';
+import { usePreferences } from '@/contexts/PreferencesContext';
+import { getDaysUntilDeparture } from '@/utils/operations';
 
 const Index = () => {
+  const { defaultView, autoRefreshInterval, showPastDepartures, gridDensity } = usePreferences();
   const [departures, setDepartures] = useState<Departure[]>(() => generateMockDepartures());
   const [filters, setFilters] = useState<FilterState>({
     dateFrom: '', dateTo: '', series: '', destination: '', search: '', opsManager: '', opsExec: '',
@@ -22,7 +26,7 @@ const Index = () => {
   const [drawerActivityCode, setDrawerActivityCode] = useState<string | undefined>();
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [bulkStatus, setBulkStatus] = useState<ActivityStatus>('complete');
-  const [view, setView] = useState<'grid' | 'calendar' | 'next' | 'series' | 'heatmap'>('grid');
+  const [view, setView] = useState<'grid' | 'calendar' | 'next' | 'series' | 'heatmap'>(defaultView);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -36,6 +40,15 @@ const Index = () => {
     return () => window.removeEventListener('keydown', handler);
   }, []);
 
+  // Auto-refresh mock data
+  useEffect(() => {
+    if (autoRefreshInterval <= 0) return;
+    const id = setInterval(() => {
+      setDepartures(generateMockDepartures());
+    }, autoRefreshInterval * 1000);
+    return () => clearInterval(id);
+  }, [autoRefreshInterval]);
+
   const destinations = useMemo(() => {
     const set = new Set(departures.map(d => d.destination));
     return Array.from(set).sort();
@@ -43,6 +56,7 @@ const Index = () => {
 
   const filtered = useMemo(() => {
     return departures.filter(dep => {
+      if (!showPastDepartures && getDaysUntilDeparture(dep.date) < 0) return false;
       if (filters.series && dep.series !== filters.series) return false;
       if (filters.destination && dep.destination !== filters.destination) return false;
       if (filters.opsManager && dep.opsManager !== filters.opsManager) return false;
@@ -159,6 +173,7 @@ const Index = () => {
             </button>
           </div>
           <ThemeSelector />
+          <PreferencesPanel />
           <button
             onClick={() => exportDeparturesToCSV(filtered)}
             title="Export CSV"
@@ -248,6 +263,7 @@ const Index = () => {
             onRowClick={handleRowClick}
             selectedIds={selectedIds}
             onToggleSelect={handleToggleSelect}
+            density={gridDensity}
           />
         ) : view === 'calendar' ? (
           <CalendarView
