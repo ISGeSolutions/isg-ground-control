@@ -36,26 +36,26 @@
 
     --radius: 0.375rem;
 
-    /* Status colors */
-    --status-green: 142 70% 45%;
-    --status-green-foreground: 142 70% 90%;
-    --status-green-muted: 142 40% 15%;
+    /* Status colors — colorblind-safe (Wong palette) */
+    --status-green: 175 60% 40%;
+    --status-green-foreground: 175 60% 88%;
+    --status-green-muted: 175 35% 14%;
     
-    --status-amber: 38 92% 50%;
-    --status-amber-foreground: 38 92% 95%;
-    --status-amber-muted: 38 50% 14%;
+    --status-amber: 45 100% 50%;
+    --status-amber-foreground: 45 100% 92%;
+    --status-amber-muted: 45 55% 13%;
     
-    --status-red: 0 72% 51%;
-    --status-red-foreground: 0 72% 92%;
-    --status-red-muted: 0 40% 14%;
+    --status-red: 15 80% 55%;
+    --status-red-foreground: 15 80% 92%;
+    --status-red-muted: 15 45% 14%;
     
     --status-grey: 220 10% 40%;
     --status-grey-foreground: 220 10% 70%;
     --status-grey-muted: 220 10% 16%;
 
-    --status-blue: 210 80% 55%;
-    --status-blue-foreground: 210 80% 92%;
-    --status-blue-muted: 210 40% 15%;
+    --status-blue: 220 70% 60%;
+    --status-blue-foreground: 220 70% 92%;
+    --status-blue-muted: 220 40% 15%;
 
     /* Grid */
     --grid-header: 220 18% 16%;
