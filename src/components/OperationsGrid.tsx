@@ -105,6 +105,15 @@ export function OperationsGrid({ departures, onCellClick, onRowClick, selectedId
             const daysOut = getDaysUntilDeparture(dep.date);
             const readiness = calculateReadiness(dep.activities);
             const risk = calculateRisk(dep.activities);
+            const applicable = dep.activities.filter(a => a.status !== 'not_applicable');
+            const hasOverdue = applicable.some(a => a.status !== 'complete' && a.status === 'overdue');
+            const hasDueWithin4Weeks = !hasOverdue && applicable.some(a => {
+              if (a.status === 'complete') return false;
+              const dueDate = new Date(a.dueDate);
+              const now = new Date();
+              const diffDays = Math.ceil((dueDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+              return diffDays >= 0 && diffDays <= 28;
+            });
             const isPast = daysOut < 0;
 
             return (
@@ -145,7 +154,7 @@ export function OperationsGrid({ departures, onCellClick, onRowClick, selectedId
                   {dep.opsExec || '—'}
                 </td>
                 <td className="ops-grid-cell text-center">
-                  <ReadinessBar value={readiness} />
+                  <ReadinessBar value={readiness} hasOverdue={hasOverdue} hasDueWithin4Weeks={hasDueWithin4Weeks} />
                 </td>
                 <td className="ops-grid-cell text-center">
                   <RiskIndicator risk={risk} />

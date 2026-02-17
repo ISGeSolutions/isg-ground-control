@@ -41,10 +41,12 @@ export function RiskIndicator({ risk }: RiskIndicatorProps) {
 
 interface ReadinessBarProps {
   value: number;
+  hasOverdue?: boolean;
+  hasDueWithin4Weeks?: boolean;
 }
 
-export function ReadinessBar({ value }: ReadinessBarProps) {
-  const color = value >= 80 ? 'bg-status-green' : value >= 50 ? 'bg-status-amber' : 'bg-status-red';
+export function ReadinessBar({ value, hasOverdue, hasDueWithin4Weeks }: ReadinessBarProps) {
+  const color = hasOverdue ? 'bg-status-red' : hasDueWithin4Weeks ? 'bg-status-amber' : 'bg-status-green';
   return (
     <div className="flex items-center gap-1.5">
       <div className="w-12 h-1.5 rounded-full bg-secondary overflow-hidden">
