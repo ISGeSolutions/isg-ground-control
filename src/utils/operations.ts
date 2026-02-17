@@ -18,18 +18,8 @@ export function calculateReadiness(activities: Activity[]): number {
 }
 
 export function calculateRisk(activities: Activity[]): RiskLevel {
-  const applicable = activities.filter(a => a.status !== 'not_applicable');
-  
-  const hasCriticalOverdue = applicable.some(a => {
-    const t = getTemplate(a.templateCode);
-    return t?.critical && a.status === 'overdue';
-  });
-  if (hasCriticalOverdue) return 'red';
-
-  const hasAnyOverdue = applicable.some(a => a.status === 'overdue');
-  if (hasAnyOverdue) return 'amber';
-
-  return 'green';
+  const hasOverdue = activities.some(a => a.status !== 'not_applicable' && a.status === 'overdue');
+  return hasOverdue ? 'red' : 'green';
 }
 
 export function getDaysUntilDeparture(departureDate: string): number {
