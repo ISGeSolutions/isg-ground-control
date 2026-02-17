@@ -6,7 +6,7 @@ import { ActivityCell } from './ActivityCell';
 import { RiskIndicator, ReadinessBar } from './StatusBadge';
 import { format } from 'date-fns';
 import { GridDensity } from '@/contexts/PreferencesContext';
-import { ArrowUp, ArrowDown, ArrowUpDown } from 'lucide-react';
+import { ArrowUp, ArrowDown, ArrowUpDown, ShieldCheck } from 'lucide-react';
 
 type SortKey = 'date' | 'series' | 'days' | 'pax' | 'readiness' | 'risk' | 'destination';
 type SortDir = 'asc' | 'desc';
@@ -82,6 +82,7 @@ export function OperationsGrid({ departures, onCellClick, onRowClick, selectedId
             </th>
             <th className="ops-grid-header border-r border-b text-center">Mgr</th>
             <th className="ops-grid-header border-r border-b text-center">Exec</th>
+            <th className="ops-grid-header border-r border-b text-center w-8" title="Guaranteed Departure">GTD</th>
             <th className={`${thClass} text-center`} onClick={() => toggleSort('readiness')}>
               <span className="inline-flex items-center gap-1">Ready <SortIcon active={sortKey === 'readiness'} dir={sortDir} /></span>
             </th>
@@ -139,6 +140,9 @@ export function OperationsGrid({ departures, onCellClick, onRowClick, selectedId
                 </td>
                 <td className="ops-grid-cell text-center font-mono text-[10px] text-muted-foreground">
                   {dep.opsExec || '—'}
+                </td>
+                <td className="ops-grid-cell text-center">
+                  {dep.guaranteed && <ShieldCheck className="w-3.5 h-3.5 text-status-green mx-auto" />}
                 </td>
                 <td className="ops-grid-cell text-center">
                   <ReadinessBar value={readiness} />

@@ -148,6 +148,7 @@ export function generateMockDepartures(): Departure[] {
       notes: '',
       opsManager: managers[Math.floor(Math.random() * managers.length)].initials,
       opsExec: execs[Math.floor(Math.random() * execs.length)].initials,
+      guaranteed: Math.random() > 0.5,
     });
   }
 
@@ -175,6 +176,35 @@ export function generateMockDepartures(): Departure[] {
       notes: '',
       opsManager: managers[Math.floor(Math.random() * managers.length)].initials,
       opsExec: execs[Math.floor(Math.random() * execs.length)].initials,
+      guaranteed: Math.random() > 0.6,
+    });
+  }
+
+  // Add far-out departures (180+ days) to demonstrate readiness metric
+  for (const weeksOut of [26, 30, 35]) {
+    const depDate = addDays(firstSat, weeksOut * 7);
+    const i3 = Math.round((depDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+    const dateStr = format(depDate, 'yyyy-MM-dd');
+    const returnDateStr = format(addDays(depDate, 10), 'yyyy-MM-dd');
+    const dest = DESTINATIONS[Math.floor(Math.random() * DESTINATIONS.length)];
+    const series = SERIES[Math.floor(Math.random() * SERIES.length)];
+
+    departures.push({
+      id: `dep-${dateStr}-${dest.code}-far`,
+      date: dateStr,
+      returnDate: returnDateStr,
+      destination: dest.name,
+      destinationCode: dest.code,
+      series: series.code,
+      tourGeneric: TOUR_GENERICS[Math.floor(Math.random() * TOUR_GENERICS.length)],
+      paxCount: 15 + Math.floor(Math.random() * 80),
+      bookingCount: 2 + Math.floor(Math.random() * 15),
+      activities: generateActivities(dateStr, i3),
+      travelSystemLink: `https://bookings.example.com/departure/${dateStr}/${dest.code}`,
+      notes: '',
+      opsManager: managers[Math.floor(Math.random() * managers.length)].initials,
+      opsExec: execs[Math.floor(Math.random() * execs.length)].initials,
+      guaranteed: true,
     });
   }
 
