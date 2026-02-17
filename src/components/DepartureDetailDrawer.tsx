@@ -84,7 +84,7 @@ export function DepartureDetailDrawer({ departure, selectedActivityCode, onClose
               className="inline-flex items-center gap-1 mt-2 text-[10px] text-primary hover:underline"
             >
               <ExternalLink className="w-3 h-3" />
-              Open in Travel System
+              Open in Group Overview Page
             </a>
           )}
         </div>

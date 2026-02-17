@@ -9,7 +9,6 @@ import AppLayout from "@/components/AppLayout";
 import Index from "./pages/Index";
 import ActivityTemplatesPage from "./pages/ActivityTemplatesPage";
 import SeriesToursPage from "./pages/SeriesToursPage";
-import DestinationsPage from "./pages/DestinationsPage";
 import TeamMembersPage from "./pages/TeamMembersPage";
 import BusinessRulesPage from "./pages/BusinessRulesPage";
 import NotFound from "./pages/NotFound";
@@ -29,7 +28,6 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/definitions/activities" element={<ActivityTemplatesPage />} />
               <Route path="/definitions/series" element={<SeriesToursPage />} />
-              <Route path="/definitions/destinations" element={<DestinationsPage />} />
               <Route path="/definitions/team" element={<TeamMembersPage />} />
               <Route path="/definitions/rules" element={<BusinessRulesPage />} />
             </Route>

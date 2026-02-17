@@ -10,7 +10,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { LayoutDashboard, ListChecks, Map, Users, Cog, Layers } from 'lucide-react';
+import { LayoutDashboard, ListChecks, Users, Cog, Layers } from 'lucide-react';
 
 const NAV_ITEMS = [
   { title: 'Dashboard', url: '/', icon: LayoutDashboard },
@@ -19,7 +19,6 @@ const NAV_ITEMS = [
 const DEFINITION_ITEMS = [
   { title: 'Activity Templates', url: '/definitions/activities', icon: ListChecks },
   { title: 'Series / Tours', url: '/definitions/series', icon: Layers },
-  { title: 'Destinations', url: '/definitions/destinations', icon: Map },
   { title: 'Team Members', url: '/definitions/team', icon: Users },
   { title: 'Business Rules', url: '/definitions/rules', icon: Cog },
 ];
