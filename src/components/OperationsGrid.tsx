@@ -124,14 +124,12 @@ export function OperationsGrid({ departures, onCellClick, onRowClick, selectedId
                   className="ops-grid-cell font-mono cursor-pointer hover:text-primary transition-colors"
                   onClick={() => onRowClick(dep.id)}
                 >
-                  {format(new Date(dep.date), 'EEE dd MMM')}
-                </td>
-                <td className="ops-grid-cell font-mono text-muted-foreground">
                   <span className="inline-flex items-center gap-1">
                     {dep.gtd && <ShieldCheck className="w-3.5 h-3.5 text-status-green shrink-0" />}
-                    {dep.series}
+                    {format(new Date(dep.date), 'EEE dd MMM')}
                   </span>
                 </td>
+                <td className="ops-grid-cell font-mono text-muted-foreground">{dep.series}</td>
                 <td className={`ops-grid-cell text-center font-mono font-semibold ${
                   daysOut <= 3 ? 'risk-red' : daysOut <= 7 ? 'risk-amber' : 'text-muted-foreground'
                 }`}>
