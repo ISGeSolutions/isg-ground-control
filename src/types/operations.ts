@@ -54,7 +54,6 @@ export interface Departure {
   notes: string;
   opsManager?: string;
   opsExec?: string;
-  guaranteed?: boolean; // GTD - guaranteed departure
 }
 
 export interface Series {

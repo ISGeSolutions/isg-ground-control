@@ -7,19 +7,12 @@ export function getTemplate(code: string): ActivityTemplate | undefined {
 }
 
 export function calculateReadiness(activities: Activity[]): number {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
   const requiredActivities = activities.filter(a => {
     if (a.status === 'not_applicable') return false;
     const t = getTemplate(a.templateCode);
-    if (!t?.required) return false;
-    // Only count tasks whose due date has arrived (task is "ready to start")
-    const due = new Date(a.dueDate);
-    due.setHours(0, 0, 0, 0);
-    return due.getTime() <= today.getTime();
+    return t?.required;
   });
-  if (requiredActivities.length === 0) return 0; // nothing due yet = 0%
+  if (requiredActivities.length === 0) return 100;
   const completed = requiredActivities.filter(a => a.status === 'complete').length;
   return Math.round((completed / requiredActivities.length) * 100);
 }
