@@ -146,6 +146,7 @@ export function generateMockDepartures(): Departure[] {
       activities: generateActivities(dateStr, i),
       travelSystemLink: `https://bookings.example.com/departure/${dateStr}/${dest.code}`,
       notes: '',
+      gtd: Math.random() > 0.35,
       opsManager: managers[Math.floor(Math.random() * managers.length)].initials,
       opsExec: execs[Math.floor(Math.random() * execs.length)].initials,
     });
@@ -173,6 +174,7 @@ export function generateMockDepartures(): Departure[] {
       bookingCount: 3 + Math.floor(Math.random() * 30),
       activities: generateActivities(dateStr, i2),
       notes: '',
+      gtd: Math.random() > 0.35,
       opsManager: managers[Math.floor(Math.random() * managers.length)].initials,
       opsExec: execs[Math.floor(Math.random() * execs.length)].initials,
     });
