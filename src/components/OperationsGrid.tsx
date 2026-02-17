@@ -69,7 +69,7 @@ export function OperationsGrid({ departures, onCellClick, onRowClick, selectedId
               <input type="checkbox" className="w-3 h-3 accent-primary" onChange={() => {}} />
             </th>
             <th className={`${thClass} text-left`} onClick={() => toggleSort('date')}>
-              <span className="inline-flex items-center gap-1">Date <SortIcon active={sortKey === 'date'} dir={sortDir} /></span>
+              <span className="inline-flex items-center gap-1">DepDate <SortIcon active={sortKey === 'date'} dir={sortDir} /></span>
             </th>
             <th className={`${thClass} text-left`} onClick={() => toggleSort('series')}>
               <span className="inline-flex items-center gap-1">Series <SortIcon active={sortKey === 'series'} dir={sortDir} /></span>
@@ -95,7 +95,6 @@ export function OperationsGrid({ departures, onCellClick, onRowClick, selectedId
                 title={`${t.name} [${t.source}]`}
               >
                 <span className={t.critical ? 'text-status-red' : ''}>{t.code}</span>
-                <span className="block text-[8px] opacity-50 normal-case tracking-normal">{t.source}</span>
               </th>
             ))}
           </tr>
@@ -124,7 +123,7 @@ export function OperationsGrid({ departures, onCellClick, onRowClick, selectedId
                   className="ops-grid-cell font-mono cursor-pointer hover:text-primary transition-colors"
                   onClick={() => onRowClick(dep.id)}
                 >
-                  {format(new Date(dep.date), 'dd MMM')}
+                  {format(new Date(dep.date), 'EEE dd MMM')}
                 </td>
                 <td className="ops-grid-cell font-mono text-muted-foreground">{dep.series}</td>
                 <td className={`ops-grid-cell text-center font-mono font-semibold ${

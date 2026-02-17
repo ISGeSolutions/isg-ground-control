@@ -101,8 +101,14 @@ export function generateMockDepartures(): Departure[] {
   const managers = USERS.filter(u => u.role === 'ops_manager');
   const execs = USERS.filter(u => u.role === 'ops_exec');
 
-  for (let i = -3; i < 25; i++) {
-    const depDate = addDays(today, i);
+  // Generate departures on Saturdays only
+  const todayDay = today.getDay(); // 0=Sun, 6=Sat
+  const daysUntilSat = (6 - todayDay + 7) % 7;
+  const firstSat = addDays(today, daysUntilSat === 0 && todayDay === 6 ? 0 : daysUntilSat);
+
+  for (let w = -2; w < 6; w++) {
+    const depDate = addDays(firstSat, w * 7);
+    const i = Math.round((depDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
     const dateStr = format(depDate, 'yyyy-MM-dd');
     const returnDateStr = format(addDays(depDate, 7 + Math.floor(Math.random() * 7)), 'yyyy-MM-dd');
     const dest = DESTINATIONS[Math.floor(Math.random() * DESTINATIONS.length)];
@@ -129,9 +135,10 @@ export function generateMockDepartures(): Departure[] {
     });
   }
 
-  // Add a second departure on some days
-  for (let i = 2; i < 15; i += 3) {
-    const depDate = addDays(today, i);
+  // Add a second departure on some Saturdays
+  for (let w = 0; w < 6; w += 2) {
+    const depDate = addDays(firstSat, w * 7);
+    const i2 = Math.round((depDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
     const dateStr = format(depDate, 'yyyy-MM-dd');
     const returnDateStr = format(addDays(depDate, 7 + Math.floor(Math.random() * 7)), 'yyyy-MM-dd');
     const dest = DESTINATIONS[Math.floor(Math.random() * DESTINATIONS.length)];
@@ -148,7 +155,7 @@ export function generateMockDepartures(): Departure[] {
       tourGeneric,
       paxCount: 10 + Math.floor(Math.random() * 100),
       bookingCount: 3 + Math.floor(Math.random() * 30),
-      activities: generateActivities(dateStr, i),
+      activities: generateActivities(dateStr, i2),
       notes: '',
       opsManager: managers[Math.floor(Math.random() * managers.length)].initials,
       opsExec: execs[Math.floor(Math.random() * execs.length)].initials,
