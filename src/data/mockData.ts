@@ -4,35 +4,51 @@ import { addDays, format, subDays } from 'date-fns';
 // ─── SLA Hierarchy Rules ───────────────────────────────────────────────────────
 // Global defaults — can be overridden at TG, TS, TD levels
 export const GLOBAL_SLA_RULES: SLARule[] = [
-  { level: 'global', activityCode: 'HB', offsetDays: 14, referenceDate: 'departure', required: true, critical: true },
-  { level: 'global', activityCode: 'HC', offsetDays: 7, referenceDate: 'departure', required: true, critical: true },
-  { level: 'global', activityCode: 'TR', offsetDays: 10, referenceDate: 'departure', required: true, critical: true },
-  { level: 'global', activityCode: 'TC', offsetDays: 5, referenceDate: 'departure', required: true, critical: false },
-  { level: 'global', activityCode: 'FT', offsetDays: 21, referenceDate: 'departure', required: true, critical: true },
-  { level: 'global', activityCode: 'FC', offsetDays: 7, referenceDate: 'departure', required: true, critical: true },
-  { level: 'global', activityCode: 'VI', offsetDays: 30, referenceDate: 'departure', required: false, critical: false },
-  { level: 'global', activityCode: 'IN', offsetDays: 14, referenceDate: 'departure', required: false, critical: false },
-  { level: 'global', activityCode: 'BD', offsetDays: 3, referenceDate: 'departure', required: true, critical: false },
-  { level: 'global', activityCode: 'FN', offsetDays: 2, referenceDate: 'ji_exists', required: true, critical: false },
+  { level: 'global', activityCode: 'CQ', offsetDays: 365, referenceDate: 'departure', required: true, critical: true },
+  { level: 'global', activityCode: 'CC', offsetDays: 300, referenceDate: 'departure', required: true, critical: true },
+  { level: 'global', activityCode: 'PV', offsetDays: 90, referenceDate: 'departure', required: false, critical: false },
+  { level: 'global', activityCode: 'TR', offsetDays: 150, referenceDate: 'departure', required: true, critical: false },
+  { level: 'global', activityCode: 'FR', offsetDays: 180, referenceDate: 'departure', required: true, critical: true },
+  { level: 'global', activityCode: 'FT', offsetDays: 90, referenceDate: 'departure', required: true, critical: true },
+  { level: 'global', activityCode: 'HB', offsetDays: 365, referenceDate: 'departure', required: true, critical: true },
+  { level: 'global', activityCode: 'HR', offsetDays: 540, referenceDate: 'departure', required: true, critical: true },
+  { level: 'global', activityCode: 'LG', offsetDays: 60, referenceDate: 'departure', required: true, critical: false },
+  { level: 'global', activityCode: 'TL', offsetDays: 30, referenceDate: 'departure', required: true, critical: false },
+  { level: 'global', activityCode: 'LI', offsetDays: 120, referenceDate: 'departure', required: false, critical: false },
+  { level: 'global', activityCode: 'RL', offsetDays: 42, referenceDate: 'departure', required: true, critical: true },
+  { level: 'global', activityCode: 'JI', offsetDays: 28, referenceDate: 'departure', required: true, critical: true },
+  { level: 'global', activityCode: 'IF', offsetDays: 180, referenceDate: 'departure', required: true, critical: true },
+  { level: 'global', activityCode: 'AP', offsetDays: 28, referenceDate: 'departure', required: true, critical: true },
+  { level: 'global', activityCode: 'FC', offsetDays: 42, referenceDate: 'departure', required: true, critical: true },
+  { level: 'global', activityCode: 'RN', offsetDays: 84, referenceDate: 'departure', required: true, critical: false },
+  { level: 'global', activityCode: 'PL', offsetDays: 7, referenceDate: 'return', required: true, critical: false },
 ];
 
 // Example overrides at Tour Series level
 export const SERIES_SLA_OVERRIDES: SLARule[] = [
-  { level: 'tour_series', activityCode: 'HB', offsetDays: 21, referenceDate: 'departure', required: true, critical: true }, // WA24 needs hotels earlier
-  { level: 'tour_series', activityCode: 'VI', offsetDays: 45, referenceDate: 'departure', required: true, critical: true }, // CE24 visa is required+critical
+  { level: 'tour_series', activityCode: 'HB', offsetDays: 400, referenceDate: 'departure', required: true, critical: true },
+  { level: 'tour_series', activityCode: 'LI', offsetDays: 150, referenceDate: 'departure', required: true, critical: true },
 ];
 
 export const ACTIVITY_TEMPLATES: ActivityTemplate[] = [
-  { code: 'HB', name: 'Hotel Booking', required: true, critical: true, slaOffsetDays: 14, referenceDate: 'departure', source: 'GLOBAL' },
-  { code: 'HC', name: 'Hotel Confirmation', required: true, critical: true, slaOffsetDays: 7, referenceDate: 'departure', source: 'GLOBAL' },
-  { code: 'TR', name: 'Transfer Arrangement', required: true, critical: true, slaOffsetDays: 10, referenceDate: 'departure', source: 'GLOBAL' },
-  { code: 'TC', name: 'Transfer Confirmation', required: true, critical: false, slaOffsetDays: 5, referenceDate: 'departure', source: 'GLOBAL' },
-  { code: 'FT', name: 'Flight Ticketing', required: true, critical: true, slaOffsetDays: 21, referenceDate: 'departure', source: 'GLOBAL' },
-  { code: 'FC', name: 'Flight Confirmation', required: true, critical: true, slaOffsetDays: 7, referenceDate: 'departure', source: 'GLOBAL' },
-  { code: 'VI', name: 'Visa Check', required: false, critical: false, slaOffsetDays: 30, referenceDate: 'departure', source: 'TG' },
-  { code: 'IN', name: 'Insurance', required: false, critical: false, slaOffsetDays: 14, referenceDate: 'departure', source: 'TG' },
-  { code: 'BD', name: 'Boarding Docs', required: true, critical: false, slaOffsetDays: 3, referenceDate: 'departure', source: 'TS' },
-  { code: 'FN', name: 'Final Notification', required: true, critical: false, slaOffsetDays: 2, referenceDate: 'ji_exists', source: 'GLOBAL' },
+  { code: 'CQ', name: 'Agent Costings Requested', required: true, critical: true, slaOffsetDays: 365, referenceDate: 'departure', source: 'GLOBAL' },
+  { code: 'CC', name: 'Agent Costings Confirmed', required: true, critical: true, slaOffsetDays: 300, referenceDate: 'departure', source: 'GLOBAL' },
+  { code: 'PV', name: 'Pre-Visit', required: false, critical: false, slaOffsetDays: 90, referenceDate: 'departure', source: 'GLOBAL' },
+  { code: 'TR', name: 'Trains', required: true, critical: false, slaOffsetDays: 150, referenceDate: 'departure', source: 'GLOBAL' },
+  { code: 'FR', name: 'Domestic Flights Requested', required: true, critical: true, slaOffsetDays: 180, referenceDate: 'departure', source: 'GLOBAL' },
+  { code: 'FT', name: 'Domestic Flights Ticketed', required: true, critical: true, slaOffsetDays: 90, referenceDate: 'departure', source: 'GLOBAL' },
+  { code: 'HB', name: 'Hotels Booked', required: true, critical: true, slaOffsetDays: 365, referenceDate: 'departure', source: 'GLOBAL' },
+  { code: 'HR', name: 'Hotels Requested', required: true, critical: true, slaOffsetDays: 540, referenceDate: 'departure', source: 'GLOBAL' },
+  { code: 'LG', name: 'Local Guides', required: true, critical: false, slaOffsetDays: 60, referenceDate: 'departure', source: 'GLOBAL' },
+  { code: 'TL', name: 'Tour Leader Pre-Tour', required: true, critical: false, slaOffsetDays: 30, referenceDate: 'departure', source: 'GLOBAL' },
+  { code: 'LI', name: 'Letter of Invitation', required: false, critical: false, slaOffsetDays: 120, referenceDate: 'departure', source: 'TG' },
+  { code: 'RL', name: 'Rooming List', required: true, critical: true, slaOffsetDays: 42, referenceDate: 'departure', source: 'GLOBAL' },
+  { code: 'JI', name: 'Joining Instructions', required: true, critical: true, slaOffsetDays: 28, referenceDate: 'departure', source: 'GLOBAL' },
+  { code: 'IF', name: 'International Flight', required: true, critical: true, slaOffsetDays: 180, referenceDate: 'departure', source: 'GLOBAL' },
+  { code: 'AP', name: 'Agent Paid', required: true, critical: true, slaOffsetDays: 28, referenceDate: 'departure', source: 'GLOBAL' },
+  { code: 'FC', name: 'Final Check', required: true, critical: true, slaOffsetDays: 42, referenceDate: 'departure', source: 'GLOBAL' },
+  { code: 'RN', name: 'Confirmed Running', required: true, critical: false, slaOffsetDays: 84, referenceDate: 'departure', source: 'GLOBAL' },
+  { code: 'PL', name: 'Tour Leader Post-Tour', required: true, critical: false, slaOffsetDays: 7, referenceDate: 'return', source: 'GLOBAL' },
 ];
 
 export const SERIES: Series[] = [
