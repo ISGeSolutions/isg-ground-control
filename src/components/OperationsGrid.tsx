@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { Departure } from '@/types/operations';
 import { ACTIVITY_TEMPLATES } from '@/data/mockData';
+import { ShieldCheck } from 'lucide-react';
 import { calculateReadiness, calculateRisk, getDaysUntilDeparture } from '@/utils/operations';
 import { ActivityCell } from './ActivityCell';
 import { RiskIndicator, ReadinessBar } from './StatusBadge';
@@ -125,7 +126,12 @@ export function OperationsGrid({ departures, onCellClick, onRowClick, selectedId
                 >
                   {format(new Date(dep.date), 'EEE dd MMM')}
                 </td>
-                <td className="ops-grid-cell font-mono text-muted-foreground">{dep.series}</td>
+                <td className="ops-grid-cell font-mono text-muted-foreground">
+                  <span className="inline-flex items-center gap-1">
+                    {dep.gtd && <ShieldCheck className="w-3.5 h-3.5 text-status-green shrink-0" />}
+                    {dep.series}
+                  </span>
+                </td>
                 <td className={`ops-grid-cell text-center font-mono font-semibold ${
                   daysOut <= 3 ? 'risk-red' : daysOut <= 7 ? 'risk-amber' : 'text-muted-foreground'
                 }`}>

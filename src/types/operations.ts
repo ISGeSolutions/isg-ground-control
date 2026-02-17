@@ -52,6 +52,7 @@ export interface Departure {
   activities: Activity[];
   travelSystemLink?: string;
   notes: string;
+  gtd: boolean;
   opsManager?: string;
   opsExec?: string;
 }
