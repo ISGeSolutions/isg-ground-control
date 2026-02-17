@@ -1,6 +1,5 @@
 import { useState, useCallback } from 'react';
 import { Lock, Save, ChevronDown, Plus, Trash2, CalendarIcon } from 'lucide-react';
-import { Switch } from '@/components/ui/switch';
 import { toast } from '@/hooks/use-toast';
 import { ACTIVITY_TEMPLATES } from '@/data/mockData';
 import type { SLAReferenceDate, SLALevel } from '@/types/operations';
@@ -32,7 +31,7 @@ type RefDate = SLAReferenceDate;
 const REF_DATES: RefDate[] = ['departure', 'return', 'ji_exists'];
 const REF_LABELS: Record<RefDate, string> = { departure: 'Departure', return: 'Return', ji_exists: 'JI exists' };
 
-const ACTIVITY_COLS = ACTIVITY_TEMPLATES.map(t => ({ code: t.code, label: t.code }));
+const ACTIVITY_COLS = ACTIVITY_TEMPLATES.slice(0, 5).map(t => ({ code: t.code, label: t.code }));
 
 // ─── Data types ────────────────────────────────────────────────────────────────
 
@@ -78,28 +77,8 @@ function resolveEntries(own: SLAEntry[], inherited: SLAEntry[]): SLAEntry[] {
 
 // ─── Seed data ─────────────────────────────────────────────────────────────────
 
-function buildGlobalOffsets(): Record<string, number | null> {
-  const map: Record<string, number | null> = {};
-  for (const t of ACTIVITY_TEMPLATES) {
-    map[t.code] = null;
-  }
-  return map;
-}
-
 function buildInitialLevels(): HierarchyLevel[] {
-  // Build global entries from ACTIVITY_TEMPLATES defaults
-  const globalDep: Record<string, number | null> = {};
-  const globalRet: Record<string, number | null> = {};
-  const globalJi: Record<string, number | null> = {};
-  for (const t of ACTIVITY_TEMPLATES) {
-    if (t.referenceDate === 'departure') globalDep[t.code] = -t.slaOffsetDays;
-    else globalDep[t.code] = null;
-    if (t.referenceDate === 'return') globalRet[t.code] = t.slaOffsetDays;
-    else globalRet[t.code] = null;
-    if (t.referenceDate === 'ji_exists') globalJi[t.code] = t.slaOffsetDays;
-    else globalJi[t.code] = null;
-  }
-
+  const codes = ACTIVITY_COLS.map(c => c.code);
   return [
     {
       id: 'global',
@@ -109,9 +88,9 @@ function buildInitialLevels(): HierarchyLevel[] {
       seriesName: 'Global',
       parentId: null,
       entries: [
-        { refDate: 'departure', offsets: globalDep },
-        { refDate: 'return', offsets: globalRet },
-        { refDate: 'ji_exists', offsets: globalJi },
+        { refDate: 'departure', offsets: { [codes[0]]: -10, [codes[1]]: -15, [codes[2]]: -45, [codes[3]]: null, [codes[4]]: null } },
+        { refDate: 'return', offsets: { [codes[0]]: null, [codes[1]]: null, [codes[2]]: null, [codes[3]]: 7, [codes[4]]: null } },
+        { refDate: 'ji_exists', offsets: { [codes[0]]: null, [codes[1]]: null, [codes[2]]: null, [codes[3]]: null, [codes[4]]: 1 } },
       ],
     },
     {
@@ -121,7 +100,11 @@ function buildInitialLevels(): HierarchyLevel[] {
       tourCode: 'BHU',
       seriesName: 'Tour Generic / Bhutan',
       parentId: 'global',
-      entries: emptyEntries(),
+      entries: [
+        { refDate: 'departure', offsets: { [codes[0]]: -20, [codes[1]]: null, [codes[2]]: null, [codes[3]]: null, [codes[4]]: null } },
+        { refDate: 'return', offsets: { [codes[0]]: null, [codes[1]]: null, [codes[2]]: null, [codes[3]]: 2, [codes[4]]: null } },
+        { refDate: 'ji_exists', offsets: { [codes[0]]: null, [codes[1]]: null, [codes[2]]: null, [codes[3]]: null, [codes[4]]: null } },
+      ],
     },
     {
       id: 'ts_bhu2026',
@@ -130,7 +113,25 @@ function buildInitialLevels(): HierarchyLevel[] {
       tourCode: 'BHU2026',
       seriesName: 'Tour series / Bhutan in 2026',
       parentId: 'tg_bhu',
-      entries: emptyEntries(),
+      entries: [
+        { refDate: 'departure', offsets: { [codes[0]]: null, [codes[1]]: -10, [codes[2]]: null, [codes[3]]: null, [codes[4]]: null } },
+        { refDate: 'return', offsets: { [codes[0]]: null, [codes[1]]: null, [codes[2]]: null, [codes[3]]: 5, [codes[4]]: null } },
+        { refDate: 'ji_exists', offsets: { [codes[0]]: null, [codes[1]]: null, [codes[2]]: null, [codes[3]]: null, [codes[4]]: null } },
+      ],
+    },
+    {
+      id: 'dep_25oct',
+      type: 'departure',
+      label: 'Dep: 25 Oct 2026',
+      tourCode: 'BHU2026',
+      seriesName: 'Tour series / Bhutan in 2026',
+      parentId: 'ts_bhu2026',
+      departureDate: '2026-10-25',
+      entries: [
+        { refDate: 'departure', offsets: { [codes[0]]: null, [codes[1]]: null, [codes[2]]: -60, [codes[3]]: null, [codes[4]]: null } },
+        { refDate: 'return', offsets: { [codes[0]]: null, [codes[1]]: null, [codes[2]]: null, [codes[3]]: null, [codes[4]]: null } },
+        { refDate: 'ji_exists', offsets: { [codes[0]]: null, [codes[1]]: null, [codes[2]]: null, [codes[3]]: null, [codes[4]]: null } },
+      ],
     },
   ];
 }
@@ -160,12 +161,6 @@ function typeLabel(type: HierarchyLevel['type']) {
 export default function SLAHierarchyEditor() {
   const [levels, setLevels] = useState<HierarchyLevel[]>(buildInitialLevels);
   const [expandedLevel, setExpandedLevel] = useState<string>('global');
-  const [showReturn, setShowReturn] = useState(false);
-  const [showJI, setShowJI] = useState(false);
-
-  const visibleRefDates = ['departure' as RefDate]
-    .concat(showReturn ? ['return' as RefDate] : [])
-    .concat(showJI ? ['ji_exists' as RefDate] : []);
 
   // ─── Add level ─────────────────────────────────────────────────────────
   const [addingType, setAddingType] = useState<'tour_generic' | 'tour_series' | 'departure' | null>(null);
@@ -340,7 +335,6 @@ export default function SLAHierarchyEditor() {
                   entries={resolveEntries(emptyEntries(), inherited)}
                   locked
                   activityCols={ACTIVITY_COLS}
-                  visibleRefDates={visibleRefDates}
                 />
               )}
 
@@ -354,7 +348,6 @@ export default function SLAHierarchyEditor() {
                 inheritedEntries={inherited}
                 levelId={level.id}
                 onCellChange={updateCell}
-                visibleRefDates={visibleRefDates}
               />
             </div>
           )}
@@ -376,16 +369,6 @@ export default function SLAHierarchyEditor() {
             The most specific level wins. Inherited values are <span className="inline-flex items-center gap-0.5"><Lock className="w-2.5 h-2.5" /> LOCKED</span>.
             Overridden values are <span className="font-bold">highlighted</span>.
           </p>
-        </div>
-        <div className="flex items-center gap-4">
-          <label className="flex items-center gap-1.5 text-[10px] font-semibold text-muted-foreground cursor-pointer">
-            <Switch checked={showReturn} onCheckedChange={setShowReturn} className="scale-75" />
-            Return dates
-          </label>
-          <label className="flex items-center gap-1.5 text-[10px] font-semibold text-muted-foreground cursor-pointer">
-            <Switch checked={showJI} onCheckedChange={setShowJI} className="scale-75" />
-            JI dates
-          </label>
         </div>
       </div>
 
@@ -498,7 +481,6 @@ interface SLATableProps {
   inheritedEntries?: SLAEntry[];
   levelId?: string;
   onCellChange?: (levelId: string, refDate: RefDate, actCode: string, value: number | null) => void;
-  visibleRefDates?: RefDate[];
 }
 
 function isOverridden(own: number | null, inherited: number | null): boolean {
@@ -506,9 +488,8 @@ function isOverridden(own: number | null, inherited: number | null): boolean {
   return own !== inherited;
 }
 
-function SLATable({ label, tourCode, entries, locked, activityCols, inheritedEntries, levelId, onCellChange, visibleRefDates }: SLATableProps) {
+function SLATable({ label, tourCode, entries, locked, activityCols, inheritedEntries, levelId, onCellChange }: SLATableProps) {
   const colTemplate = `180px 80px 80px repeat(${activityCols.length}, 56px)`;
-  const filteredEntries = visibleRefDates ? entries.filter(e => visibleRefDates.includes(e.refDate)) : entries;
 
   return (
     <div className={`rounded border ${locked ? 'border-muted bg-muted/30' : 'border-border bg-background/50'}`}>
@@ -523,7 +504,7 @@ function SLATable({ label, tourCode, entries, locked, activityCols, inheritedEnt
       </div>
 
       {/* Rows */}
-      {filteredEntries.map((entry, idx) => {
+      {entries.map((entry, idx) => {
         const inheritedEntry = inheritedEntries?.find(e => e.refDate === entry.refDate);
 
         return (
