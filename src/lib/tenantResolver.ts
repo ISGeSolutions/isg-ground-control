@@ -30,8 +30,8 @@ export interface TenantConfig {
 // TODO: In production, fetch from /api/tenants/{tenantId}/config
 // For now, a static registry for development.
 const TENANT_REGISTRY: Record<string, Partial<TenantConfig>> = {
-  acme: {
-    displayName: 'Acme Travel Corp',
+  novadhruv: {
+    displayName: 'novadhruv-dev.eisg.com',
     oidc: {
       authority: 'https://auth.acme.example.com',
       clientId: 'ops-admin-acme',
@@ -96,7 +96,7 @@ export function resolveTenantFromUrl(): ResolvedTenant {
   }
 
   // Default for localhost / preview
-  return { tenantId: 'acme', environment: 'dev' };
+  return { tenantId: 'novadhruv', environment: 'dev' };
 }
 
 export function buildTenantConfig(resolved: ResolvedTenant): TenantConfig {
