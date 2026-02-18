@@ -15,6 +15,7 @@ import ActivityTemplatesPage from "./pages/ActivityTemplatesPage";
 import SeriesToursPage from "./pages/SeriesToursPage";
 import TeamMembersPage from "./pages/TeamMembersPage";
 import BusinessRulesPage from "./pages/BusinessRulesPage";
+import LocalisationPage from "./pages/LocalisationPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -38,6 +39,7 @@ const App = () => (
                         <Route path="/definitions/series" element={<SeriesToursPage />} />
                         <Route path="/definitions/team" element={<TeamMembersPage />} />
                         <Route path="/definitions/rules" element={<BusinessRulesPage />} />
+                        <Route path="/settings/localisation" element={<LocalisationPage />} />
                       </Route>
                       <Route path="*" element={<NotFound />} />
                     </Routes>

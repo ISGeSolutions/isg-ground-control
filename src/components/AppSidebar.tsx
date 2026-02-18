@@ -10,7 +10,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { LayoutDashboard, ListChecks, Users, Cog, Layers } from 'lucide-react';
+import { LayoutDashboard, ListChecks, Users, Cog, Layers, Globe } from 'lucide-react';
 
 const NAV_ITEMS = [
   { title: 'Dashboard', url: '/', icon: LayoutDashboard },
@@ -21,6 +21,10 @@ const DEFINITION_ITEMS = [
   { title: 'Series / Tours', url: '/definitions/series', icon: Layers },
   { title: 'Team Members', url: '/definitions/team', icon: Users },
   { title: 'Business Rules', url: '/definitions/rules', icon: Cog },
+];
+
+const SETTINGS_ITEMS = [
+  { title: 'Localisation', url: '/settings/localisation', icon: Globe },
 ];
 
 export function AppSidebar() {
@@ -52,6 +56,24 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {DEFINITION_ITEMS.map(item => (
+                <SidebarMenuItem key={item.url}>
+                  <SidebarMenuButton asChild isActive={location.pathname === item.url}>
+                    <NavLink to={item.url} end activeClassName="bg-sidebar-accent text-sidebar-primary font-medium">
+                      <item.icon className="h-4 w-4" />
+                      <span>{item.title}</span>
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel>Settings</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {SETTINGS_ITEMS.map(item => (
                 <SidebarMenuItem key={item.url}>
                   <SidebarMenuButton asChild isActive={location.pathname === item.url}>
                     <NavLink to={item.url} end activeClassName="bg-sidebar-accent text-sidebar-primary font-medium">
