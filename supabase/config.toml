@@ -1,1 +1,28 @@
 project_id = "gkwxvvqnfmadteasglao"
+
+[functions.get-departures]
+verify_jwt = false
+
+[functions.get-departure]
+verify_jwt = false
+
+[functions.update-activity]
+verify_jwt = false
+
+[functions.get-me]
+verify_jwt = false
+
+[functions.auth-session]
+verify_jwt = false
+
+[functions.auth-refresh]
+verify_jwt = false
+
+[functions.auth-logout]
+verify_jwt = false
+
+[functions.telemetry]
+verify_jwt = false
+
+[functions.support-request]
+verify_jwt = false
