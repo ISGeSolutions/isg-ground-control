@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -10,13 +11,14 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ApiClientProvider } from "@/contexts/ApiClientContext";
 import { LocalisationProvider } from "@/contexts/LocalisationContext";
 import AppLayout from "@/components/AppLayout";
-import Index from "./pages/Index";
-import ActivityTemplatesPage from "./pages/ActivityTemplatesPage";
-import SeriesToursPage from "./pages/SeriesToursPage";
-import TeamMembersPage from "./pages/TeamMembersPage";
-import BusinessRulesPage from "./pages/BusinessRulesPage";
-import LocalisationPage from "./pages/LocalisationPage";
-import NotFound from "./pages/NotFound";
+
+const Index = lazy(() => import("./pages/Index"));
+const ActivityTemplatesPage = lazy(() => import("./pages/ActivityTemplatesPage"));
+const SeriesToursPage = lazy(() => import("./pages/SeriesToursPage"));
+const TeamMembersPage = lazy(() => import("./pages/TeamMembersPage"));
+const BusinessRulesPage = lazy(() => import("./pages/BusinessRulesPage"));
+const LocalisationPage = lazy(() => import("./pages/LocalisationPage"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
 
@@ -32,17 +34,19 @@ const App = () => (
                   <Toaster />
                   <Sonner />
                   <BrowserRouter>
-                    <Routes>
-                      <Route element={<AppLayout />}>
-                        <Route path="/" element={<Index />} />
-                        <Route path="/definitions/activities" element={<ActivityTemplatesPage />} />
-                        <Route path="/definitions/series" element={<SeriesToursPage />} />
-                        <Route path="/definitions/team" element={<TeamMembersPage />} />
-                        <Route path="/definitions/rules" element={<BusinessRulesPage />} />
-                        <Route path="/settings/localisation" element={<LocalisationPage />} />
-                      </Route>
-                      <Route path="*" element={<NotFound />} />
-                    </Routes>
+                    <Suspense fallback={<div className="flex items-center justify-center min-h-screen text-muted-foreground text-sm">Loading…</div>}>
+                      <Routes>
+                        <Route element={<AppLayout />}>
+                          <Route path="/" element={<Index />} />
+                          <Route path="/definitions/activities" element={<ActivityTemplatesPage />} />
+                          <Route path="/definitions/series" element={<SeriesToursPage />} />
+                          <Route path="/definitions/team" element={<TeamMembersPage />} />
+                          <Route path="/definitions/rules" element={<BusinessRulesPage />} />
+                          <Route path="/settings/localisation" element={<LocalisationPage />} />
+                        </Route>
+                        <Route path="*" element={<NotFound />} />
+                      </Routes>
+                    </Suspense>
                   </BrowserRouter>
                 </TooltipProvider>
               </PreferencesProvider>
